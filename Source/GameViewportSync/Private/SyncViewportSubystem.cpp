@@ -4,6 +4,7 @@
 #include "ViewportSyncSettings.h"
 #include "ViewportSyncEditorExtender.h"
 
+
 // UE Includes
 #include "Editor.h"
 #include "IAssetViewport.h"
@@ -421,18 +422,21 @@ void USyncViewportSubsystem::SetGlobalViewportFollowTargetOverride(AActor* Follo
 
 void USyncViewportSubsystem::SetViewportFollowActor(FLevelEditorViewportClient* const ViewportClient, const AActor* Actor)
 {
+
 	if (FLiveViewportInfo* ViewportInfo = ViewportInfos.Find(ViewportClient))
 	{
 		ViewportInfo->FollowActor = Actor;
 
-		UE_LOG(LogViewportSync, Log, TEXT("Set the follow actor to %s"), Actor != nullptr ? *Actor->GetActorLabel() : TEXT("None"));
+		UE_LOG(LogViewportSync, Log, TEXT("Set the follow actorzzz to %s"), Actor != nullptr ? *Actor->GetActorLabel() : TEXT("None"));
 
 		if (ViewportInfo->FollowActor.IsValid())
 		{	
 			// We check that the world is valid here because I don't want to take away user control while PIE is not active
 			if (PIEWorldContext)
 			{
+				
 				ApplyViewportFollowActor(ViewportClient, ViewportInfo->FollowActor.Get());
+				
 			}
 		}
 		else

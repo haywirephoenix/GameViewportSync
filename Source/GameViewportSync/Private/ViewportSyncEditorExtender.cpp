@@ -19,6 +19,7 @@
 
 #define LOCTEXT_NAMESPACE "ViewportSync"
 
+
 const FName FViewportSyncEditorExtender::LevelEditorModuleName("LevelEditor");
 
 const FName FViewportSyncEditorExtender::SectionExtensionPointName("ViewportSync");
@@ -89,7 +90,46 @@ void FViewportSyncEditorExtender::RegisterCommands(TSharedRef<FUICommandList> Co
 			
 			if(SelectedActors.Num() > 0 && ViewportClient != nullptr)
 			{
-				OwningSubsystem->SetViewportFollowActor(ViewportClient, SelectedActors[0]);
+				//OwningSubsystem->SetViewportFollowActor(ViewportClient, SelectedActors[0]);
+
+				UE_LOG(LogTemp, Log, TEXT("selected actor: %s"), *SelectedActors[0]->GetName());
+
+				const auto GlobalFollowActorOverride = OwningSubsystem->GetGlobalViewportFollowTargetOverride();
+
+				const USyncViewportSubsystem::FLiveViewportInfo* ViewportInfo = OwningSubsystem->GetDataForViewport(ViewportClient);
+
+				const TSoftObjectPtr<AActor> TargetActor = GlobalFollowActorOverride.IsNull() ? ViewportInfo->FollowActor : GlobalFollowActorOverride;
+
+				if (TargetActor.IsValid()) {
+					/*UE_LOG(LogTemp, Log, TEXT("target actor: %s"), *TargetActor->GetName());*/
+
+					if (TargetActor == SelectedActors[0]) {
+						
+						UE_LOG(LogTemp, Log, TEXT("target actor is already selected, deselecting..."));
+
+						OwningSubsystem->SetViewportFollowActor(ViewportClient, nullptr);
+
+					}
+
+				}
+				else {
+					OwningSubsystem->SetViewportFollowActor(ViewportClient, SelectedActors[0]);
+				}
+				
+				
+
+				/*if (SelectedActors[0] == OwningSubsystem->GetGlobalViewportFollowTargetOverride().Get()) {
+
+					UE_LOG(LogTemp, Log, TEXT("Actor Same, Unlocking"));
+					
+
+					OwningSubsystem->SetViewportFollowActor(ViewportClient, nullptr);
+
+				}
+				else {
+					
+				}*/
+				
 			}	
 		})
 	);
